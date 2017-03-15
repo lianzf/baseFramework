@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.mapper.SysRolesMapper">
+	<select id="getListByMap" parameterType="java.util.Map" resultType="com.framework.po.SysRoles">
+		SELECT
+			roles_id,
+			role_name,
+			role_desc,
+			module,
+			parent_id
+		FROM
+			t_sys_roles
+		<where>
+		    <if test="roleName !=null">
+				 and role_name like '%${roleName}%'
+			</if>
+		</where>
+		ORDER BY
+			roles_id DESC
+		LIMIT #{startPage}, #{pageSize}
+	</select>
+	<select id="getAllRoles" parameterType="java.util.Map" resultType="com.framework.po.SysRoles">
+		SELECT
+			a.roles_id,
+			a.role_name,
+			a.role_desc
+		FROM
+			t_sys_roles a
+	</select>
+	<select id="count" resultType="int">
+		select
+			count(1)
+		from
+			t_sys_roles
+		<where>
+		    <if test="roleName !=null">
+				 and role_name like '%${roleName}%'
+			</if>
+		</where>
+	</select>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="rolesId" parameterType="com.framework.po.SysRoles">
+    	INSERT	INTO t_sys_roles
+			(	
+				role_name,
+				role_desc,
+				module,
+				parent_id
+      		)
+		VALUES
+			(
+				#{roleName},
+				#{roleDesc},
+				#{module},
+				#{parentId}
+      		)
+	</insert>
+	<update id="update" parameterType="com.framework.po.SysRoles">
+		UPDATE 
+			t_sys_roles
+		SET
+			role_name = #{roleName},
+			role_desc = #{roleDesc}
+		WHERE 
+			roles_id = #{rolesId}
+	</update>
+	<select id="getById" resultType="com.framework.po.SysRoles">
+	    SELECT
+	    	roles_id,
+			role_name,
+			role_desc,
+			module,
+			parent_id
+		FROM
+			t_sys_roles
+		where roles_id = #{rolesId}
+	</select>
+	<select id="isExistsRoles" resultType="com.framework.po.SysRoles">
+		SELECT
+			roles_id,
+			role_name,
+			role_desc,
+			module,
+			parent_id
+		FROM
+			t_sys_roles
+		where role_name = #{roleName}
+	</select>
+	<select id="getUserRoles" resultType="com.framework.po.SysRoles">
+	    SELECT
+			b.ROLES_ID,
+			b.ROLE_NAME,
+			b.ROLE_DESC
+		FROM
+			t_sys_users_roles a,
+			t_sys_roles b
+		WHERE
+			a.ROLES_ID = b.ROLES_ID
+		AND a.USERS_ID = #{usersId}
+	</select>
+	<select id="getRoleNotExistsUser" resultType="com.framework.po.SysRoles">
+	    SELECT
+			roles_id,
+			role_name,
+			role_desc
+		FROM
+			t_sys_roles a
+		WHERE
+			a.roles_id NOT IN (${roleArr})
+	</select>
+</mapper>

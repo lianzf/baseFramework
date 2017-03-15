@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.framework.mapper.DataDictionaryMapper">
+
+	
+	<!-- 插入一条应用数据 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.framework.po.DataDictionary">
+    	INSERT	INTO t_data_dictionary
+			(	
+				grouping,
+				name,
+				value,
+				description,
+				create_time,
+				update_time
+      		)
+		VALUES
+			(
+				#{grouping},
+				#{name},
+				#{value},
+				#{description},
+				#{createTime},
+				#{updateTime}
+      		)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.po.DataDictionary">
+		UPDATE 
+			t_data_dictionary
+		SET
+			grouping = #{grouping},
+			name = #{name},
+			value = #{value},
+			description = #{description}
+		WHERE 
+			id = #{id}
+	</update>
+		
+	<delete id="deleteById" parameterType="INTEGER">
+		DELETE
+			FROM
+				t_data_dictionary
+			WHERE
+				id = #{id}
+	</delete>
+	
+	<select id="getById" parameterType="INTEGER" resultType="com.framework.po.DataDictionary">
+		SELECT
+			*
+		FROM
+			t_data_dictionary
+		WHERE
+			id = #{id}
+	</select>
+
+	<select id="getListByPo" parameterType="com.framework.po.DataDictionary" resultType="com.framework.po.DataDictionary">
+		SELECT
+			*
+		FROM 
+			t_data_dictionary
+		<where>
+			<if test="id > 0"> 
+				id = #{id}
+			</if>
+			<if test="grouping != null"> 
+				AND grouping = #{grouping}
+			</if>
+			<if test="name != null"> 
+				AND name = #{name}
+			</if>
+			<if test="value != null"> 
+				AND value = #{value}
+			</if>
+		</where>
+	</select>
+
+	<select id="getListByMap" parameterType="java.util.Map" resultType="com.framework.po.DataDictionary">
+		SELECT
+			*
+		FROM 
+			t_data_dictionary
+		<where>
+			<if test="id > 0"> 
+				id = #{id}
+			</if>
+			<if test="grouping != null"> 
+				AND grouping = #{grouping}
+			</if>
+			<if test="name != null"> 
+				AND name like '%${name}%'
+			</if>
+			<if test="value != null"> 
+				AND value = #{value}
+			</if>
+		</where>
+		order by id desc limit #{startPage}, #{pageSize}
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(*)
+		from 
+			t_data_dictionary
+		<where>
+			<if test="id != null">
+				AND id != #{id}
+			</if>
+			<if test="grouping != null"> 
+				AND grouping = #{grouping}
+			</if>
+			<if test="name != null"> 
+				AND name like '%${name}%'
+			</if>
+			<if test="value != null"> 
+				AND value = #{value}
+			</if>
+		</where>			
+	</select>
+	
+	<select id="countKey" resultType="int">
+		select
+		count(1)
+		from
+		t_data_dictionary
+		<where>
+			<if test="id != null">
+				AND id != #{id}
+			</if>
+			<if test="name != null">
+				AND name = #{name}
+			</if>
+			<if test="value != null">
+				AND value = #{value}
+			</if>
+		</where>
+	</select>
+</mapper>

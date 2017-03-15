@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 优先级从高到低分别是 ERROR、WARN、INFO、DEBUG。通过在这里定义的级别，您可以控制到应用程序中相应级别的日志信息的开关。 
+	比如在这里定义了INFO级别， 则应用程序中所有DEBUG级别的日志信息将不被打印出来 -->
+<configuration scan="true" scanPeriod="60 seconds">
+	<!--<property name="LOGFILE_HOME" value="/usr/local/jboss/standalone/log" /-->
+	<property name="LOGFILE_HOME" value="/usr/local/tomcat/logs" />
+	<timestamp key="byDay" datePattern="yyyyMMdd" />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] %X{seqID} [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+	</appender>
+	<!-- 抓取日志-->
+	<!-- <appender name="spider_info"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOGFILE_HOME}/spider_info.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/spider_repeat.log.%d{yyyy-MM}</fileNamePattern>
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+	</appender>
+	抓取重复的日志
+	<appender name="spider_repeat"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOGFILE_HOME}/spider_repeat.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/spider_repeat.log.%d{yyyy-MM}</fileNamePattern>
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+	</appender>
+	
+	系统异常日志，所有异常统一捕获，用此log输出，一月一份，最大3份
+	<appender name="spider_exception"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOGFILE_HOME}/spider_exception.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] %X{seqID} [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/spider_exception.log.%d{yyyy-MM}</fileNamePattern>
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+	</appender>	
+	
+	视频下载日志
+	<appender name="video_download"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOGFILE_HOME}/video_download.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/video_download.log.%d{yyyy-MM}</fileNamePattern>
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+	</appender>
+	
+	视频下载异常日志，所有异常统一捕获，用此log输出，一月一份，最大3份
+	<appender name="video_download_exception"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOGFILE_HOME}/video_download_exception.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%X{req.remoteHost} [%date] %X{seqID} [%-5level] [%thread] [%-8class{1}:%L] - %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/video_download_exception.log.%d{yyyy-MM}</fileNamePattern>
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+	</appender>	 -->
+	
+	<!-- 以下是IBATIS调试使用 -->
+	<logger name="com.ibatis" level="DEBUG" />
+	<logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
+	<logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
+	<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
+	<logger name="java.sql.Connection" level="DEBUG" />
+	<logger name="java.sql.Statement" level="DEBUG" />
+	<logger name="java.sql.PreparedStatement" level="DEBUG" />
+	<logger name="java.sql.ResultSet" level="DEBUG" />
+
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.opensymphony" level="INFO"/>
+    <logger name="org.apache" level="INFO"/>
+	
+    <!-- 开发调试阶段使用DEBUG，部署生产环境用INFO -->
+    <!-- <logger name="spider_info" level="INFO">
+		<appender-ref ref="spider_info" />
+	</logger>
+    <logger name="spider_repeat" level="INFO">
+		<appender-ref ref="spider_repeat" />
+	</logger>
+	<logger name="spider_exception" level="INFO">
+		<appender-ref ref="spider_exception" />
+	</logger>	
+	<logger name="video_download" level="INFO">
+		<appender-ref ref="video_download" />
+	</logger>
+	<logger name="video_download_exception" level="INFO">
+		<appender-ref ref="video_download_exception" />
+	</logger>	 -->
+	
+	<!-- 开发调试阶段使用DEBUG，部署生产环境用INFO -->
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>

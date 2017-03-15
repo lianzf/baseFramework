@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.mapper.UserRolesMapper">
+	<select id="getRolesByUserAccount" parameterType="java.util.Map" resultType="com.framework.po.SysRoles">
+		SELECT
+			a.ROLES_ID,
+			a.ROLE_NAME,
+			a.ROLE_DESC,
+			a.MODULE,
+			a.PARENT_ID
+		FROM
+			t_sys_roles a
+		WHERE
+			EXISTS (
+				SELECT
+					1
+				FROM
+					t_sys_users_roles b
+				WHERE
+					a.ROLES_ID = b.roles_id
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						t_sys_users c
+					WHERE
+						b.USERS_ID = c.users_id
+					AND c.user_account = #{userAccount}))
+	</select>
+	<insert id="insertUserRole">
+	    INSERT INTO t_sys_users_roles (users_Id,roles_Id) values
+		<foreach collection="list" item="obj" index="index" separator=",">
+			(#{obj.usersId},#{obj.rolesId})
+		</foreach>
+	</insert>
+	<delete id="deleteById">
+	    delete from 
+	    	t_sys_users_roles 
+	    where 
+	    	users_id = #{usersId}
+	</delete>
+</mapper>

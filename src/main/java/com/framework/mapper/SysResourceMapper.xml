@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.mapper.SysResourceMapper">
+	<select id="getListByMap" parameterType="java.util.Map" resultType="com.framework.po.SysResources">
+		SELECT
+			resource_id,
+			resource_name,
+			resource_desc,
+			resource_type,
+			resource_string,
+			priority,
+			module,
+			parent_id
+		FROM
+			t_sys_resources
+		<where>
+		    <if test="resourceDesc !=null">
+				 and resource_desc like '%${resourceDesc}%'
+			</if>
+		    <if test="resourceName !=null">
+				 and resource_name like '%${resourceName}%'
+			</if>
+		    <if test="resourceString !=null">
+				 and resource_string like '%${resourceString}%'
+			</if>
+		</where>
+		GROUP BY
+			resource_id,
+			parent_id
+		order by parent_id 
+		LIMIT #{startPage}, #{pageSize}
+	</select>
+	<select id="count" resultType="int">
+		select
+			count(1)
+		from
+			t_sys_resources
+		<where>
+		    <if test="resourceDesc !=null">
+				 and resource_desc like '%${resourceDesc}%'
+			</if>
+			<if test="resourceName !=null">
+				 and resource_name like '%${resourceName}%'
+			</if>
+			<if test="resourceString !=null">
+				 and resource_string like '%${resourceString}%'
+			</if>
+		</where>
+	</select>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.framework.po.SysResources">
+    	INSERT	INTO t_sys_resources
+			(	
+				resource_name,
+				resource_desc,
+				resource_type,
+				resource_string,
+				priority,
+				module,
+				parent_id
+      		)
+		VALUES
+			(
+				#{resourceName},
+				#{resourceDesc},
+				#{resourceType},
+				#{resourceString},
+				#{priority},
+				#{module},
+				#{parentId}
+      		)
+	</insert>
+	<update id="update" parameterType="com.framework.po.SysResources">
+		UPDATE 
+			t_sys_resources
+		SET
+			resource_name = #{resourceName},
+			resource_type = #{resourceType},
+			resource_string = #{resourceString},
+			parent_id = #{parentId},
+			resource_desc = #{resourceDesc}
+		WHERE 
+			resource_id = #{resourceId}
+	</update>
+	<select id="getById" resultType="com.framework.po.SysResources">
+	    SELECT
+	    	resource_id,
+			resource_name,
+			resource_desc,
+			resource_type,
+			resource_string,
+			priority,
+			module,
+			parent_id
+		FROM
+			t_sys_resources
+		where resource_id = #{resourceId}
+	</select>
+	<select id="getResourceList" resultType="com.framework.po.SysResources">
+	    SELECT
+			resource_id,
+			resource_name,
+			resource_desc,
+			resource_type,
+			resource_string,
+			priority,
+			module,
+			parent_id
+		FROM
+			t_sys_resources
+		WHERE
+			resource_type = 1
+		GROUP BY
+			parent_id,
+			resource_id
+	</select>
+	<select id="getResourceListAll" resultType="com.framework.po.SysResources">
+	    SELECT
+	    	resource_id,
+			resource_name,
+			resource_desc,
+			resource_type,
+			resource_string,
+			priority,
+			module,
+			parent_id
+		FROM
+			t_sys_resources
+	</select>
+	<select id="getFirstMenu" resultType="com.framework.po.SysResources">
+	    SELECT
+	    	resource_id,
+			resource_name,
+			resource_desc,
+			resource_type,
+			resource_string,
+			priority,
+			module,
+			parent_id
+		FROM
+			t_sys_resources 
+		where
+			parent_id = 0
+	</select>
+	<select id="getResByRolesId" resultType="com.framework.po.SysResources">
+	    SELECT
+			a.RESOURCE_ID,
+			a.RESOURCE_NAME,
+			a.RESOURCE_TYPE,
+			a.RESOURCE_STRING,
+			a.RESOURCE_DESC,
+			a.PARENT_ID,
+			a.MODULE
+		FROM
+			t_sys_resources a,
+			t_sys_roles_res b
+		WHERE
+			a.RESOURCE_ID = b.resources_ID
+		AND b.ROLES_ID = #{rolesId}
+	</select>
+	<select id="getResNotExistsRoles" resultType="com.framework.po.SysResources">
+	    SELECT
+			a.RESOURCE_ID,
+			a.RESOURCE_NAME,
+			a.RESOURCE_TYPE,
+			a.RESOURCE_STRING,
+			a.RESOURCE_DESC,
+			a.PARENT_ID,
+			a.MODULE
+		FROM
+			t_sys_resources a
+		WHERE
+			a.RESOURCE_ID NOT IN (${resArr})
+	</select>
+</mapper>

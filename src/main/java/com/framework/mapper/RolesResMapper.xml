@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.mapper.RolesResMapper">
+	<select id="getResByRolesName" parameterType="java.util.Map" resultType="com.framework.po.SysResources">
+		SELECT
+			a.RESOURCE_ID,
+			a.RESOURCE_NAME,
+			a.RESOURCE_DESC,
+			a.RESOURCE_TYPE,
+			a.RESOURCE_STRING,
+			a.MODULE,
+			a.PRIORITY,
+			a.PARENT_ID
+		FROM
+			t_sys_resources a
+		WHERE
+			EXISTS (
+				SELECT
+					1
+				FROM
+					t_sys_roles_res b
+				WHERE
+					a.RESOURCE_ID = b.resources_id
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						t_sys_roles c
+					WHERE
+						b.ROLES_ID = c.roles_id
+					AND c.role_name = #{roleName}))
+	</select>
+	<insert id="insertRoleRes">
+	    INSERT INTO t_sys_roles_res (resources_id,roles_Id) values
+		<foreach collection="list" item="obj" index="index" separator=",">
+			(#{obj.resourcesId},#{obj.rolesId})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteById">
+	    DELETE
+		FROM
+			t_sys_roles_res
+		WHERE
+			roles_id = #{rolesId}
+	</delete>	
+</mapper>
